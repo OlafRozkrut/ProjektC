@@ -3,7 +3,7 @@
 
 float **tablica_younga(int n, float liczba)
 {
-    int m = n; // pomocnicza zmienna u¿ywana do ograniczenia wielkosci tablicy
+    int m = n; // pomocnicza zmienna uzywana do ograniczenia wielkosci tablicy
     float **A = (float **)malloc(n * sizeof(float *)); //dynamiczne alokowanie pamieci
     for (int i = 0; i < n; i++)
     {
