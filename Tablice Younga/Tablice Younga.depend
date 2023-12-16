@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1702740206 source:c:\kuba_szko³a\tablice younga\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+
