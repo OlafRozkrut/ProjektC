@@ -123,12 +123,16 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd,UINT msg,WPARAM wp,LPARAM lp)
                 }
 
         char tekst[1000];
-        sprintf(tekst, "%f %f %f %f\r\n%f %f %f %f\r\n%f %f %f %f\r\n%f %f %f %f",
-                tablica[0][0], tablica[0][1], tablica[0][2], tablica[0][3],
-                tablica[1][0], tablica[1][1], tablica[1][2], tablica[1][3],
-                tablica[2][0], tablica[2][1], tablica[2][2], tablica[2][3],
-                tablica[3][0], tablica[3][1], tablica[3][2], tablica[3][3]);
-
+        int index = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                index += sprintf(tekst + index, "%f ", tablica[i][j]);
+            }
+        index += sprintf(tekst + index, "\r\n");
+        }
+        tekst[index - 2] = '\0';
         SetWindowText(hOut, tekst);
         }
             break;
@@ -139,13 +143,18 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd,UINT msg,WPARAM wp,LPARAM lp)
             {
                 float **nowa_tablica = jeu_de_taquin(4,tablica,0,0);
                 char tekst[1000];
-                sprintf(tekst, "%f %f %f %f\r\n%f %f %f %f\r\n%f %f %f %f\r\n%f %f %f %f",
-                    nowa_tablica[0][0], nowa_tablica[0][1], nowa_tablica[0][2], nowa_tablica[0][3],
-                    nowa_tablica[1][0], nowa_tablica[1][1], nowa_tablica[1][2], nowa_tablica[1][3],
-                    nowa_tablica[2][0], nowa_tablica[2][1], nowa_tablica[2][2], nowa_tablica[2][3],
-                    nowa_tablica[3][0], nowa_tablica[3][1], nowa_tablica[3][2], nowa_tablica[3][3]);
+                int index = 0;
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        index += sprintf(tekst + index, "%f ", tablica[i][j]);
+                    }
+                index += sprintf(tekst + index, "\r\n");
+                }
+                tekst[index - 2] = '\0';
 
-        SetWindowText(hOut, tekst);
+                SetWindowText(hOut, tekst);
             }
             break;
         }
