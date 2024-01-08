@@ -89,7 +89,7 @@ wc.hCursor = LoadCursor(NULL,IDC_ARROW);
 wc.hInstance= hInst;
 wc.lpszClassName=L"myWindowClass";
 wc.lpfnWndProc=WindowProcedure;
-MessageBox(NULL, "Aby wybraæ rodzaj tablicy u¿yj menu w górnej czêœci aplikacji","PodpowiedŸ",MB_OK);
+MessageBox(NULL, "Aby wybrać rodzaj tablicy wybierz z menu u góry aplikacji","Podpowiedź",MB_OK);
 przypisanie();
 if(!RegisterClassW(&wc))
     return -1;
@@ -178,11 +178,11 @@ void AddMenus(HWND hWnd)
     HMENU hSubMenu = CreateMenu();
 
     AppendMenu(hSubMenu,MF_STRING,FILE_STANDARD,"Standardowa");
-    AppendMenu(hSubMenu,MF_STRING,FILE_CROSSED,"Skrzy¿owana");
+    AppendMenu(hSubMenu,MF_STRING,FILE_CROSSED,"Skrzyżowana");
 
     AppendMenu(hFileMenu,MF_POPUP,(UINT_PTR)hSubMenu,"Rodzaj Tablicy");
     AppendMenu(hFileMenu,MF_SEPARATOR,NULL,NULL);
-    AppendMenu(hFileMenu,MF_STRING,FILE_MENU_EXIT,"WyjdŸ");
+    AppendMenu(hFileMenu,MF_STRING,FILE_MENU_EXIT,"Wyjdź");
 
 
     AppendMenu(hMenu,MF_POPUP,(UINT_PTR)hFileMenu,"Plik");
