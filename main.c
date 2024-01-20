@@ -1,24 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
-#include <string.h>
+#include <stdlib.h>
 #include <time.h>
 #include <math.h>
-
-#define FILE_STANDARD 1
-#define FILE_MENU_OPEN 2
-#define FILE_MENU_EXIT 3
-#define FILE_CROSSED 4
-#define GENERATE_BUTTON 5
-float** tablica;
+float wylosowane[100000];
+int uzyte_wylosowane = 0;
 float rand_float()
 {
-    return((float)rand())/((double)RAND_MAX);
-    // bierzemy przypadkowa liczbe i dzielimy ja przez stala rand_max
+    float wynik = ((float)rand())/((double)RAND_MAX);
+    return wynik;
 }
 float **tablica_younga(int n, float liczba)
 {
-    srand(time(NULL));
+    srand(time(0));
     int m = n; // pomocnicza zmienna uzywana do ograniczenia wielkosci tablicy
     float **A = (float **)malloc(n * sizeof(float *)); //dynamiczne alokowanie pamieci
     for (int i = 0; i < n; i++)
@@ -32,7 +26,9 @@ float **tablica_younga(int n, float liczba)
             }
             else
             {
-                A[i][j] = rand_float();//losowa liczba
+                A[i][j] = wylosowane[uzyte_wylosowane];//rand_float();
+                uzyte_wylosowane++;
+
             }
         }
         m--;
@@ -42,9 +38,16 @@ float **tablica_younga(int n, float liczba)
 }
 float** jeu_de_taquin(int x, float **tab, int a, int b)
 {
-    printf("(%d, %d)\n", a, b);
     if (a + b == x - 1)
     {
+        FILE *punkty_do_odczytu;
+        punkty_do_odczytu = fopen("punkty_do_odczytu.txt", "a");
+        fprintf(punkty_do_odczytu,"(%d,%d)\n",a,b);
+        fclose(punkty_do_odczytu);
+        FILE *punkty_do_wykresu;
+        punkty_do_wykresu = fopen("punkty_do_wykresu.txt", "a");
+        fprintf(punkty_do_wykresu,"%d\n",a*b);
+        fclose(punkty_do_wykresu);
         return tab;
     }
     else
@@ -67,133 +70,158 @@ float** jeu_de_taquin(int x, float **tab, int a, int b)
         }
     }
 }
-void przypisanie()
+void swap(float* a, float* b)
 {
-tablica=tablica_younga(4,20);
+    float temp = *a;
+    *a = *b;
+    *b = temp;
 }
-LRESULT CALLBACK WindowProcedure(HWND,UINT,WPARAM,LPARAM);
-int pomoc=0;
 
-void AddMenus(HWND);
-void AddControls(HWND);
-
-HMENU hMenu;
-HWND hOut;
-
-int WINAPI WinMain(HINSTANCE hInst , HINSTANCE hPrevInst, LPSTR args,int ncmdshow)
+int partition(float arr[], int low, int high)
 {
-WNDCLASSW wc={0};
+    float pivot = arr[high];
+    int i = (low - 1);
 
-wc.hbrBackground= (HBRUSH)COLOR_WINDOW;
-wc.hCursor = LoadCursor(NULL,IDC_ARROW);
-wc.hInstance= hInst;
-wc.lpszClassName=L"myWindowClass";
-wc.lpfnWndProc=WindowProcedure;
-MessageBox(NULL, "Aby wybrać rodzaj tablicy wybierz z menu u góry aplikacji","Podpowiedź",MB_OK);
-przypisanie();
-if(!RegisterClassW(&wc))
-    return -1;
-CreateWindowW( L"myWindowClass", L"Aplikacja", WS_OVERLAPPEDWINDOW | WS_VISIBLE,100,100,1500,1500,NULL,NULL,NULL,NULL);
-MSG msg ={0};
-while(GetMessage(&msg,NULL,NULL,NULL))
-{
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+
+    swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
 }
-return 0;
-}
-LRESULT CALLBACK WindowProcedure(HWND hWnd,UINT msg,WPARAM wp,LPARAM lp)
+
+void quicksort(float arr[], int low, int high)
 {
-    switch(msg)
-    {
-    case WM_COMMAND:
+    if (low < high) {
+        int pivotIndex = partition(arr, low, high);
 
-        switch(wp)
-        {
-        case FILE_MENU_EXIT:
-            DestroyWindow(hWnd);
-            break;
-        case FILE_STANDARD:
-        {
-
-            if (tablica == NULL)
-                {
-                    fprintf(stderr, "Nie udalo się zaalokowac pamieci.\n");
-                    return 1;
-                }
-
-        char tekst[1000];
-        int index = 0;
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                index += sprintf(tekst + index, "%f ", tablica[i][j]);
-            }
-        index += sprintf(tekst + index, "\r\n");
-        }
-        tekst[index - 2] = '\0';
-        SetWindowText(hOut, tekst);
-        }
-            break;
-        case FILE_CROSSED:
-            MessageBeep(MB_ICONERROR);
-            break;
-        case GENERATE_BUTTON:
-            {
-                float **nowa_tablica = jeu_de_taquin(4,tablica,0,0);
-                char tekst[1000];
-                int index = 0;
-                for (int i = 0; i < 4; i++)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        index += sprintf(tekst + index, "%f ", tablica[i][j]);
-                    }
-                index += sprintf(tekst + index, "\r\n");
-                }
-                tekst[index - 2] = '\0';
-
-                SetWindowText(hOut, tekst);
-            }
-            break;
-        }
-
-    break;
-    case WM_CREATE:
-        AddMenus(hWnd);
-        AddControls(hWnd);
-        break;
-    case WM_DESTROY:
-            PostQuitMessage(0);
-            break;
-    default:
-            return DefWindowProc(hWnd,msg,wp,lp);
+        quicksort(arr, low, pivotIndex - 1);
+        quicksort(arr, pivotIndex + 1, high);
     }
 }
-void AddMenus(HWND hWnd)
+void wykres()
 {
-    hMenu=CreateMenu();
-    HMENU hFileMenu = CreateMenu();
-    HMENU hSubMenu = CreateMenu();
+    FILE *punkty_do_odczytu;
+    punkty_do_odczytu = fopen("punkty_do_odczytu.txt", "w");
+    fclose(punkty_do_odczytu);
+    FILE *punkty_do_wykresu;
+    punkty_do_wykresu = fopen("punkty_do_wykresu.txt", "w");
+    fclose(punkty_do_wykresu);
+    for(int i=0;i<100000;i++)
+    {
+        wylosowane[i]=rand_float();
+    }
+    int ile,wielkosc_tablic;
+    printf("Ile?:\n");
+    scanf("%d",&ile);
+    printf("Wielkosc tablic?:\n");
+    scanf("%d",&wielkosc_tablic);
+    float liczby[ile];
+    for(int i=0;i<ile;i++)
+    {
+        liczby[i]=rand_float();
+    }
+    quicksort(liczby,0,ile-1);
+    FILE *liczby_plik;
+    liczby_plik = fopen("liczby.txt", "w");
+    if (liczby_plik == NULL)
+    {
+        printf("Nie mo¿na otworzyæ pliku.\n");
+        return 1;
+    }
+    for(int i=0;i<ile;i++)
+    {
+        fprintf(liczby_plik,"%f\n",liczby[i]);
+    }
+    fclose(liczby_plik);
+    FILE *tablice_younga;
+    FILE *jeu_de_taquin_plik;
+    tablice_younga = fopen("tablice_younga.txt", "w");
+    jeu_de_taquin_plik = fopen("jeu_de_taquin.txt", "w");
+    for(int i=0;i<ile;i++)
+    {
 
-    AppendMenu(hSubMenu,MF_STRING,FILE_STANDARD,"Standardowa");
-    AppendMenu(hSubMenu,MF_STRING,FILE_CROSSED,"Skrzyżowana");
+        float **pomocnicza_tabela = tablica_younga(wielkosc_tablic,liczby[i]);
+        for(int j=0;j<wielkosc_tablic;j++)
+        {
+            for(int k=0;k<wielkosc_tablic;k++)
+            {
+                if(isnan(pomocnicza_tabela[j][k]))
+                {
+                    fprintf(tablice_younga,"         ");
+                }
+                else
+                {
+                    fprintf(tablice_younga,"%f ",pomocnicza_tabela[j][k]);
+                }
+            }
+            fprintf(tablice_younga,"\n");
+        }
+        fprintf(tablice_younga,"\n");
+        float **pomocnicza_tabela2 = jeu_de_taquin(wielkosc_tablic,pomocnicza_tabela,0,0);
+        for(int j=0;j<wielkosc_tablic;j++)
+        {
+            for(int k=0;k<wielkosc_tablic;k++)
+            {
+                if(isnan(pomocnicza_tabela2[j][k]))
+                {
+                    fprintf(jeu_de_taquin_plik,"         ");
+                }
+                else
+                {
+                    fprintf(jeu_de_taquin_plik,"%f ",pomocnicza_tabela2[j][k]);
+                }
+            }
+            fprintf(jeu_de_taquin_plik,"\n");
+        }
 
-    AppendMenu(hFileMenu,MF_POPUP,(UINT_PTR)hSubMenu,"Rodzaj Tablicy");
-    AppendMenu(hFileMenu,MF_SEPARATOR,NULL,NULL);
-    AppendMenu(hFileMenu,MF_STRING,FILE_MENU_EXIT,"Wyjdź");
+    }
+    fclose(tablice_younga);
+    fclose(jeu_de_taquin_plik);
+    /////////////////////////////////////
+    FILE *punkty_do_wykresu_plik;
+    int wykres_y[ile];
+    // Otwieranie pliku do odczytu (w trybie tekstowym)
+    punkty_do_wykresu_plik = fopen("punkty_do_wykresu.txt", "r");
+    if (punkty_do_wykresu_plik == NULL)
+    {
+        fprintf(stderr, "Nie udało się otworzyć pliku.\n");
+        return 1;  // zwraca 1, aby oznaczyć błąd
+    }
+    // Odczytywanie danych z pliku i zapisywanie ich do tablicy
+    for (int i = 0; i < ile; ++i)
+    {
+        fscanf(punkty_do_wykresu_plik, "%d", &wykres_y[i]);
+    }
+    // Zamykanie pliku
+    fclose(punkty_do_wykresu_plik);
+    // Teraz tablica zawiera wczytane wartości
+    ////////////////////////////////////
+    FILE *dane = fopen("dane.txt", "w");
 
+    if (dane == NULL)
+    {
+        fprintf(stderr, "Nie można otworzyć pliku.\n");
+        return 1;
+    }
 
-    AppendMenu(hMenu,MF_POPUP,(UINT_PTR)hFileMenu,"Plik");
-
-
-    SetMenu(hWnd, hMenu);
-
+    for (int i = 0; i < ile; i++)
+    {
+        fprintf(dane, "%f %d\n", liczby[i], wykres_y[i]);
+    }
+    fclose(dane);
+    // Wywołaj Gnuplot w terminalu
+    #ifdef _WIN32
+        system("start gnuplot -persist -e \"plot 'dane.txt' with linespoints\"");
+    #else
+        system("gnuplot -persist -e \"plot 'dane.txt' with linespoints\"");
+    #endif
 }
-
-void AddControls(HWND hWnd)
+int main()
 {
-    CreateWindowW(L"button",L"Generuj Sciezke",WS_VISIBLE | WS_CHILD ,190,50,120,50,hWnd,(HMENU) GENERATE_BUTTON,NULL,NULL);
-    hOut = CreateWindowW(L"edit",L"",WS_VISIBLE | WS_CHILD |WS_BORDER| ES_MULTILINE,100,150,500,500,hWnd,NULL,NULL,NULL);
+    wykres();
+    return 0;
 }
