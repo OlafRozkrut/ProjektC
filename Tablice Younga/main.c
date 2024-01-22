@@ -1,18 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <string.h>
+#include <time.h>
+#include <math.h>
+#include "young.c"
 
-#define FILE_MENU_NEW 1
 #define FILE_MENU_OPEN 2
 #define FILE_MENU_EXIT 3
-#define CHANGE_TITLE 4
+#define GENERATE_BUTTON 5
+float** tablica;
+void przypisanie()
+{
+tablica=tablica_younga(4,20);
+}
 LRESULT CALLBACK WindowProcedure(HWND,UINT,WPARAM,LPARAM);
+int pomoc=0;
 
 void AddMenus(HWND);
 void AddControls(HWND);
 
 HMENU hMenu;
-HWND hEdit;
+HWND hOut1;
+HWND hOut2;
 
 int WINAPI WinMain(HINSTANCE hInst , HINSTANCE hPrevInst, LPSTR args,int ncmdshow)
 {
@@ -23,13 +33,13 @@ wc.hCursor = LoadCursor(NULL,IDC_ARROW);
 wc.hInstance= hInst;
 wc.lpszClassName=L"myWindowClass";
 wc.lpfnWndProc=WindowProcedure;
-MessageBox(NULL, "Ucze sie jak robic GUI","My first GUI",MB_OK);
-
+MessageBox(NULL, "Wpisz rozmiar oraz ilość tablic do wygnerowania","Podpowiedź",MB_OK);
+przypisanie();
 if(!RegisterClassW(&wc))
     return -1;
-CreateWindowW( L"myWindowClass", L"My Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE,100,100,500,500,NULL,NULL,NULL,NULL);
+CreateWindowW( L"myWindowClass", L"Aplikacja", WS_OVERLAPPEDWINDOW | WS_VISIBLE,100,100,700,700,NULL,NULL,NULL,NULL);
 MSG msg ={0};
-while(GetMessage(&msg,NULL,NULL,NULL))
+while(GetMessage(&msg,NULL,0,0))
 {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
@@ -47,13 +57,19 @@ LRESULT CALLBACK WindowProcedure(HWND hWnd,UINT msg,WPARAM wp,LPARAM lp)
         case FILE_MENU_EXIT:
             DestroyWindow(hWnd);
             break;
-        case FILE_MENU_NEW:
-            MessageBeep(MB_ICONINFORMATION);
-            break;
-        case CHANGE_TITLE: ;
-            wchar_t text[100];
-            GetWindowTextW(hEdit,text,100);
-            SetWindowTextW(hWnd,text);
+        case GENERATE_BUTTON:
+            {
+                char buffer1[256];
+                char buffer2[256];
+                GetWindowText(hOut1, buffer1, sizeof(buffer1));
+                GetWindowText(hOut2, buffer2, sizeof(buffer2));
+
+                int value1 = atoi(buffer1);
+                int value2 = atoi(buffer2);
+
+                // Wywołaj funkcję wykres z pobranymi wartościami
+                wykres(value1, value2);
+            }
             break;
         }
 
@@ -75,16 +91,11 @@ void AddMenus(HWND hWnd)
     HMENU hFileMenu = CreateMenu();
     HMENU hSubMenu = CreateMenu();
 
-    AppendMenu(hSubMenu,MF_STRING,CHANGE_TITLE,"Change Title");
-
-    AppendMenu(hFileMenu,MF_STRING,FILE_MENU_NEW,"New");
-    AppendMenu(hFileMenu,MF_POPUP,(UINT_PTR)hSubMenu,"Open SubMenu");
-    AppendMenu(hFileMenu,MF_SEPARATOR,NULL,NULL);
-    AppendMenu(hFileMenu,MF_STRING,FILE_MENU_EXIT,"Exit");
+    AppendMenu(hFileMenu,MF_STRING,FILE_MENU_EXIT,"Wyjdź");
 
 
-    AppendMenu(hMenu,MF_POPUP,(UINT_PTR)hFileMenu,"File");
-    AppendMenu(hMenu,MF_STRING,NULL,"Help");
+    AppendMenu(hMenu,MF_POPUP,(UINT_PTR)hFileMenu,"Plik");
+
 
     SetMenu(hWnd, hMenu);
 
@@ -92,6 +103,9 @@ void AddMenus(HWND hWnd)
 
 void AddControls(HWND hWnd)
 {
-    CreateWindowW(L"static",L"Enter text here:",WS_VISIBLE | WS_CHILD | WS_BORDER | SS_CENTER,200,100,100,50,hWnd,NULL,NULL,NULL);
-    hEdit = CreateWindowW(L"Edit",L"...",WS_VISIBLE | WS_CHILD | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL, 200,152,100,50,hWnd,NULL,NULL,NULL);
+    CreateWindowW(L"button",L"Wykonaj program",WS_VISIBLE | WS_CHILD ,500,100,130,100,hWnd,(HMENU) GENERATE_BUTTON,NULL,NULL);
+    CreateWindowW(L"Static",L"Ile",WS_VISIBLE | WS_CHILD ,300,100,100,100,hWnd,NULL,NULL,NULL);
+    CreateWindowW(L"Static",L"Wielkość",WS_VISIBLE | WS_CHILD ,300,300,100,100,hWnd,NULL,NULL,NULL);
+    hOut1 = CreateWindowW(L"edit",L"",WS_VISIBLE | WS_CHILD |WS_BORDER| ES_MULTILINE,100,100,100,100,hWnd,NULL,NULL,NULL);
+    hOut2 = CreateWindowW(L"edit",L"",WS_VISIBLE | WS_CHILD |WS_BORDER| ES_MULTILINE,100,300,100,100,hWnd,NULL,NULL,NULL);
 }
