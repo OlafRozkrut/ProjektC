@@ -1,3 +1,7 @@
+Działanie programu:
+Program dla podanej w aplikacji liczby n losuje n liczb z przedziału <0,1>, używa algorytmu quicksort do posortowania ich i dla każdej tworzy tablice younga o podanej w aplikacji wielkości. Następnie dla każdej tablicy wykonuje procedure jeu de taquin i tworzy wykres , który na osi X ma liczby dla których zostały utworzone tablice, a na osi Y koordynaty punktu w którym algortm jeu de taquin zakończył działanie.
+
+Wymagania:
 Cechy Języka C na tle innych języków programowania. 
 Używanie wielu wskaźników czy korzystanie z tablic char zamiast stringów.
 
