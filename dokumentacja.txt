@@ -1,0 +1,77 @@
+Cechy Języka C na tle innych języków programowania. 
+Używanie wielu wskaźników czy korzystanie z tablic char zamiast stringów.
+
+Reprezentacja liczby w maszynie. 
+	Wykorzystywana wielokrotnie podczas pisania kodu
+
+Jednostki leksykalne Języka C.
+Są wielokrotnie używane różnego rodzaju zmienne, stałe, operatory, funkcje, instukcje sterujące czy zmienne są określonego typu danych
+
+Operatory w Języku C. 
+Są używane wielokrotnie w kodzie (najczęściej „=” czyli przypisanie)
+
+Deklaracje i kwalifikatory; zasięg nazw. 
+Deklaracje są używane wielokrotnie, na przykład do funkcji. Wykorzystujemy  np. zmienne globalne o zasięgu plikowym.
+
+Przekształcanie typów (rzutowanie). 
+Jest to zastosowane w kodzie main.c do wzięcia wartości z okienek, przypisania ich jako tablic char a następnie zamienienie na int.
+
+Operator i wyrażenia przypisanie; wyrażenie warunkowe. 
+Używane wielokrotnie na przykład w definicjach funkcji czy przypisywaniu wartości do zmiennych.
+
+Sterowanie. 
+Instrukcje Warunkowe czy instrukcje typu switch ( na przykład w kodzie main.c do wyboru case’ów i ich działań w GUI)
+
+
+Operator przecinkowy. 
+Używany do rozdzielania funkcji czy w pętlach for czy while
+
+Funkcje w języku C (definicje i prototypy). 
+Cały plik young.c jest zapełniony funkcjami 
+
+
+Struktura programu; programy wieloplikowe; polecenie make i pliki Makefile. 
+Użycie pliku makefile do skompilowania programu
+
+Inicjowanie zmiennych; klasy pamięci.
+Używane na przykład na początku young.c do inicjalizacji zmiennych globalnych
+
+Rekurencja. 
+Wykorzystana do procedury joe de taquin
+
+Preprocesor języka C; makrodefinicje. 
+Makrodefinicje były używane zarówno w main.c jak i young.c
+
+Wskaźniki i tablice; wskaźniki jako argumenty funkcji.
+Używane na przykład do funkcji tworzącej tablice Younga
+
+Podstawowe algorytmy sortowania (bublesort, Shell-sort, quicksort). 
+Wykorzystana w young.c do funkcji wykres
+
+Arytmetyka adresów; funkcje operujące na wskaźnikach znakowych.
+Używane w funkcji swap w young.c
+
+Operacje plikowe; pliki binarne i tekstowe. 
+Używane w funkcji wykres w young.c
+
+Wejście/wyjście: znakowe, formatowane i plikowe. 
+Używane w funkcji wykres w young.c
+
+Dynamiczny przydział pamięci. 
+Wykorzystane do funkcji tablica_younga w young.c
+
+Argumenty wiersza poleceń; parametry opcjonalne wywołania programu. 
+Jako że korzystaliśmy z windows GUI nie mamy jako takiej funkcji main tylko WINAPI WinMain która nie musi przyjmować wartości podczas uruchamiania z konsoli. Przyjmuje bardziej skomplikowane parametry więc nie czuliśmy potrzeby umieszczania tego.
+
+Podstawy obsługi błędów. 
+W funkcji wykres w young.c
+
+
+Wskaźniki do funkcji; użycie wskaźników do funkcji jako argumentów funkcji i zagadnienie redundancji kodu. 
+W case Generate button w main.c
+
+Struktury; funkcje operujące na strukturach; wskaźniki na struktury i tablice struktur. 
+W case Generate button w main.c
+
+Struktury rekurencyjne: drzewa binarne i tablice mieszające; przykłady zastosowań.
+Nie wiedzieliśmy gdzie tego użyć
